@@ -26,6 +26,10 @@ const pagination = ref({
   total: 0
 })
 
+// Modal do produto
+const showModal = ref(false)
+const selectedProduct = ref(null)
+
 const sortOptions = [
   { title: 'Nome (A-Z)', value: 'name' },
   { title: 'Nome (Z-A)', value: '-name' },
@@ -146,6 +150,16 @@ const formatPrice = (price) => {
 
 const goToHome = () => {
   router.push('/')
+}
+
+const openProductModal = (product) => {
+  selectedProduct.value = product
+  showModal.value = true
+}
+
+const closeModal = () => {
+  showModal.value = false
+  selectedProduct.value = null
 }
 
 const contactWhatsApp = (product) => {
@@ -325,7 +339,6 @@ onMounted(() => {
                 </v-card-title>
                 
                 <v-card-text class="flex-grow-1">
-                  <p class="text-body-2 mb-2">{{ product.descricao }}</p>
                   <div class="d-flex flex-wrap gap-1 mb-2" v-if="product.categorias && product.categorias.length > 0">
                     <v-chip
                       v-for="categoria in product.categorias"
@@ -348,6 +361,7 @@ onMounted(() => {
                     variant="outlined"
                     size="small"
                     class="text-none flex-grow-1"
+                    @click="openProductModal(product)"
                   >
                     Ver Detalhes
                   </v-btn>
@@ -397,6 +411,66 @@ onMounted(() => {
         </div>
       </v-container>
     </v-main>
+
+    <!-- Modal de Detalhes do Produto -->
+    <v-dialog v-model="showModal" max-width="600px">
+      <v-card v-if="selectedProduct">
+        <v-card-title class="text-h5 font-weight-bold text-primary d-flex justify-space-between">
+          {{ selectedProduct.nome }}
+          <v-btn
+            icon
+            variant="text"
+            color="grey-darken-1"
+            @click="closeModal"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        
+        <v-card-text class="pa-0">
+          <ProductImage
+            :product="selectedProduct"
+            :height="300"
+          />
+        </v-card-text>
+        
+        <v-card-text>
+          <div class="d-flex flex-wrap gap-1 mb-3" v-if="selectedProduct.categorias && selectedProduct.categorias.length > 0">
+            <v-chip
+              v-for="categoria in selectedProduct.categorias"
+              :key="categoria.id"
+              color="secondary"
+              size="small"
+              variant="tonal"
+            >
+              {{ categoria.nome }}
+            </v-chip>
+          </div>
+          
+          <p class="text-h5 font-weight-bold text-secondary mb-3">
+            {{ formatPrice(selectedProduct.preco) }}
+          </p>
+          
+          <div v-if="selectedProduct.descricao">
+            <h3 class="text-h6 font-weight-bold mb-2">Descrição</h3>
+            <p class="text-body-1 mb-3 formatted-description">{{ selectedProduct.descricao }}</p>
+          </div>
+        </v-card-text>
+        
+        <v-card-actions class="pa-4">
+          <v-btn
+            color="secondary"
+            variant="flat"
+            size="large"
+            class="text-none flex-grow-1"
+            @click="contactWhatsApp(selectedProduct)"
+          >
+            <v-icon start>mdi-whatsapp</v-icon>
+            Comprar via WhatsApp
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-footer class="footer bg-primary">
       <v-container>
@@ -507,5 +581,10 @@ onMounted(() => {
     font-size: 0.75rem;
     padding: 0 8px;
   }
+}
+
+.formatted-description {
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 </style>

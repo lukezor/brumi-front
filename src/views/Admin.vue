@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { authService } from '@/services/auth.js'
 import { productsService } from '@/services/products.js'
-import { getImageUrls, getProductMainImage, hasImages } from '@/utils/imageUtils.js'
+import { getImageUrls, getProductMainImage, hasImages, getImageUrl } from '@/utils/imageUtils.js'
 
 const isAuthenticated = ref(false)
 const isLoading = ref(false)
@@ -159,30 +159,44 @@ const closeProductDialog = () => {
 const handleImageChange = (event) => {
   const files = Array.from(event.target.files)
   
-  if (files.length > 5) {
-    productsError.value = 'Máximo de 5 imagens permitidas'
+  // Conta imagens existentes + novas
+  const existingImagesCount = productForm.value.imagens ? productForm.value.imagens.length : 0
+  const totalImages = existingImagesCount + files.length
+  
+  if (totalImages > 5) {
+    productsError.value = 'Máximo de 5 imagens permitidas (incluindo as existentes)'
     return
   }
   
   imageFiles.value = files
-  imagePreviews.value = []
   
+  // Mantém as imagens existentes no preview
+  const existingImageUrls = productForm.value.imagens ? getImageUrls(productForm.value.imagens) : []
+  imagePreviews.value = [...existingImageUrls]
+  
+  // Adiciona previews das novas imagens
   files.forEach((file, index) => {
     const reader = new FileReader()
     reader.onload = (e) => {
-      imagePreviews.value[index] = e.target.result
+      imagePreviews.value[existingImagesCount + index] = e.target.result
     }
     reader.readAsDataURL(file)
   })
 }
 
 const removeImage = (index) => {
+  const existingImagesCount = productForm.value.imagens ? productForm.value.imagens.length : 0
+  
+  // Remove do preview
   imagePreviews.value.splice(index, 1)
-  if (imageFiles.value.length > 0) {
-    imageFiles.value.splice(index, 1)
-  } else {
-    // Remove from existing images
+  
+  if (index < existingImagesCount) {
+    // Remove imagem existente
     productForm.value.imagens.splice(index, 1)
+  } else {
+    // Remove imagem nova
+    const newImageIndex = index - existingImagesCount
+    imageFiles.value.splice(newImageIndex, 1)
   }
 }
 
@@ -620,30 +634,17 @@ onMounted(() => {
                 ></v-select>
               </v-col>
 
-              <v-col cols="12">
-                <v-file-input
-                  label="Imagens do Produto (máximo 5)"
-                  accept="image/*"
-                  variant="outlined"
-                  prepend-icon=""
-                  prepend-inner-icon="mdi-camera"
-                  multiple
-                  @change="handleImageChange"
-                  :disabled="isLoading"
-                  hint="Selecione até 5 imagens"
-                ></v-file-input>
-              </v-col>
-
-              <v-col v-if="imagePreviews.length > 0" cols="12">
-                <p class="text-subtitle-2 mb-3">Imagens selecionadas:</p>
-                <div class="d-flex flex-wrap gap-3">
+              <!-- Seção de imagens existentes -->
+              <v-col v-if="editingProduct && productForm.imagens && productForm.imagens.length > 0" cols="12">
+                <p class="text-subtitle-2 mb-3">Imagens atuais do produto:</p>
+                <div class="d-flex flex-wrap gap-3 mb-4">
                   <div 
-                    v-for="(preview, index) in imagePreviews" 
-                    :key="index"
+                    v-for="(imagePath, index) in productForm.imagens" 
+                    :key="'existing-' + index"
                     class="position-relative"
                   >
                     <v-img
-                      :src="preview"
+                      :src="getImageUrl(imagePath)"
                       width="120"
                       height="120"
                       cover
@@ -657,6 +658,63 @@ onMounted(() => {
                       class="position-absolute remove-btn"
                       @click="removeImage(index)"
                     ></v-btn>
+                    <v-chip
+                      size="x-small"
+                      color="info"
+                      variant="flat"
+                      class="position-absolute existing-chip"
+                    >
+                      Atual
+                    </v-chip>
+                  </div>
+                </div>
+              </v-col>
+
+              <v-col cols="12">
+                <v-file-input
+                  label="Adicionar novas imagens"
+                  accept="image/*"
+                  variant="outlined"
+                  prepend-icon=""
+                  prepend-inner-icon="mdi-camera"
+                  multiple
+                  @change="handleImageChange"
+                  :disabled="isLoading"
+                  :hint="editingProduct ? 'Adicione novas imagens ao produto' : 'Selecione até 5 imagens'"
+                ></v-file-input>
+              </v-col>
+
+              <v-col v-if="imageFiles.length > 0" cols="12">
+                <p class="text-subtitle-2 mb-3">Novas imagens selecionadas:</p>
+                <div class="d-flex flex-wrap gap-3">
+                  <div 
+                    v-for="(file, index) in imageFiles" 
+                    :key="'new-' + index"
+                    class="position-relative"
+                  >
+                    <v-img
+                      :src="imagePreviews[productForm.imagens.length + index]"
+                      width="120"
+                      height="120"
+                      cover
+                      class="rounded"
+                    ></v-img>
+                    <v-btn
+                      icon="mdi-close"
+                      size="small"
+                      color="error"
+                      variant="flat"
+                      class="position-absolute remove-btn"
+                      @click="removeImage(productForm.imagens.length + index)"
+                    ></v-btn>
+                    <v-chip
+                      size="x-small"
+                      color="success"
+                      variant="flat"
+                      class="position-absolute existing-chip"
+                    >
+                      Nova
+                    </v-chip>
                   </div>
                 </div>
               </v-col>
@@ -796,6 +854,11 @@ onMounted(() => {
 .remove-btn {
   top: -8px;
   right: -8px;
+}
+
+.existing-chip {
+  bottom: -8px;
+  left: -8px;
 }
 
 .gap-1 {
