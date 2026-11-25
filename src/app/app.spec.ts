@@ -42,9 +42,22 @@ describe('App (layout)', () => {
   it('tem o lugar onde as paginas aparecem e o rodape com o link do admin', async () => {
     const tela = await desenhar();
     expect(tela.querySelector('main router-outlet')).not.toBeNull();
-    const admin = tela.querySelector<HTMLAnchorElement>('footer a');
+    const admin = tela.querySelector<HTMLAnchorElement>('footer .final a');
     expect(admin?.textContent).toBe('Área administrativa');
     expect(admin?.getAttribute('href')).toBe('/admin');
     expect(tela.querySelector('footer')?.textContent).toContain(String(new Date().getFullYear()));
+  });
+
+  it('o rodape traz o contato da loja em todas as paginas', async () => {
+    const tela = await desenhar();
+    const rodape = tela.querySelector('footer')!;
+    expect(rodape.textContent).toContain('Rio Claro SP');
+    expect(rodape.textContent).toContain('(19) 99133-7245');
+    const hrefs = Array.from(rodape.querySelectorAll('a')).map((a) => a.getAttribute('href'));
+    expect(hrefs).toContain('https://wa.me/5519991337245');
+    expect(hrefs).toContain('https://www.instagram.com/brumipresentes/');
+    // Links externos abrem em outra aba, com rel="noopener" (a página aberta não controla a nossa).
+    const externos = Array.from(rodape.querySelectorAll<HTMLAnchorElement>('a[target="_blank"]'));
+    expect(externos.every((a) => a.rel.includes('noopener'))).toBe(true);
   });
 });

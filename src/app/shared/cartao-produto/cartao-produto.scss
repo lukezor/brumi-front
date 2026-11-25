@@ -1,0 +1,56 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.cartao {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.foto,
+.sem-foto {
+  width: 100%;
+  aspect-ratio: 4 / 3; // mesma altura para todos os cartões, com foto ou sem
+}
+
+.foto {
+  object-fit: cover; // preenche o espaço sem distorcer (≈ "cover" do v-img)
+  display: block;
+}
+
+.sem-foto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface-variant);
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+  }
+}
+
+mat-card-content {
+  flex: 1; // empurra o botão para o fim do cartão
+}
+
+.nome {
+  font: var(--mat-sys-title-medium);
+  color: var(--mat-sys-primary);
+  margin: 16px 0 8px;
+}
+
+.descricao {
+  margin: 0 0 12px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.preco {
+  font: var(--mat-sys-title-large);
+  margin: 0;
+}

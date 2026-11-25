@@ -4,6 +4,7 @@ import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/api/auth.interceptor';
 import { erroInterceptor } from './core/api/erro.interceptor';
+import { provideLocalizacaoBrasil } from './core/localizacao';
 
 /**
  * Configuracao global da aplicacao: a lista de "providers" (servicos disponiveis para injecao).
@@ -20,5 +21,7 @@ export const appConfig: ApplicationConfig = {
     //  - withInterceptors(): a ORDEM importa. Na ida, a requisicao passa pelo auth (poe o token) e depois pelo
     //    erro. Na volta, o erro trata a resposta. Se o erro repetir a requisicao, ela vai direto ao servidor.
     provideHttpClient(withFetch(), withInterceptors([authInterceptor, erroInterceptor])),
+    // Datas, números e dinheiro em português do Brasil (R$ 199,90).
+    ...provideLocalizacaoBrasil(),
   ],
 };

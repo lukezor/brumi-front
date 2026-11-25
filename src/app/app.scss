@@ -50,16 +50,40 @@
 }
 
 .rodape {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 16px 24px;
-  background-color: var(--mat-sys-surface-container);
-  color: var(--mat-sys-on-surface-variant);
-  font: var(--mat-sys-body-small);
+  margin-top: 48px;
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
 
   a {
     color: inherit;
   }
+
+  h3 {
+    font: var(--mat-sys-title-small);
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  p {
+    margin: 0 0 4px;
+  }
+}
+
+.colunas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.final {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 24px;
+  font: var(--mat-sys-body-small);
+  background-color: color-mix(in srgb, black 15%, var(--mat-sys-primary));
 }

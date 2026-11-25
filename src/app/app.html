@@ -49,7 +49,35 @@
   <router-outlet />
 </main>
 
-<footer class="rodape">
-  <span>© {{ ano }} Brumi Presentes Perfumados</span>
-  <a routerLink="/admin">Área administrativa</a>
+<footer class="rodape" id="contato">
+  <div class="colunas">
+    <div>
+      <h3>{{ contato.nome }}</h3>
+      @for (linha of contato.descricao; track linha) {
+        <p>{{ linha }}</p>
+      }
+      <p><mat-icon inline>location_on</mat-icon> {{ contato.cidade }}</p>
+    </div>
+    <div>
+      <h3>Contato</h3>
+      <p>Pedidos pelo WhatsApp</p>
+      <p>
+        <a [href]="whatsapp" target="_blank" rel="noopener">
+          <mat-icon inline>chat</mat-icon> {{ contato.whatsappExibicao }}
+        </a>
+      </p>
+    </div>
+    <div>
+      <h3>Redes sociais</h3>
+      <p>
+        <a [href]="contato.instagram" target="_blank" rel="noopener">
+          <mat-icon inline>photo_camera</mat-icon> Instagram
+        </a>
+      </p>
+    </div>
+  </div>
+  <div class="final">
+    <span>© {{ ano }} Brumi Presentes Perfumados</span>
+    <a routerLink="/admin">Área administrativa</a>
+  </div>
 </footer>

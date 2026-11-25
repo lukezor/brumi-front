@@ -7,6 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
+import { CONTATO, linkWhatsapp } from './core/contato';
 
 /** Um item do menu de navegacao. "interface" so existe no TypeScript: descreve o formato de um objeto. */
 interface LinkMenu {
@@ -64,4 +65,6 @@ export class App {
   ];
 
   protected readonly ano = new Date().getFullYear();
+  protected readonly contato = CONTATO;
+  protected readonly whatsapp = linkWhatsapp();
 }

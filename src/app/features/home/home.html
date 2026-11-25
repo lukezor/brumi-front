@@ -1,10 +1,69 @@
+<!-- 1. Destaque -->
 <section class="destaque">
-  <h1>Brumi Presentes Perfumados</h1>
-  <p>Entregamos carinho em forma de presente.</p>
-  <a mat-flat-button routerLink="/produtos">
-    <mat-icon>storefront</mat-icon>
-    Ver produtos
-  </a>
+  <h1>BRUMI PRESENTES PERFUMADOS</h1>
+  <p class="frase">Entregamos carinho em forma de presente.</p>
+  <div class="acoes">
+    <a mat-flat-button [href]="linkPedido" target="_blank" rel="noopener">
+      <mat-icon>chat</mat-icon>
+      Fazer pedido
+    </a>
+    <a mat-stroked-button routerLink="/produtos">
+      <mat-icon>storefront</mat-icon>
+      Ver catálogo
+    </a>
+  </div>
 </section>
 
-<p class="aviso">Página inicial provisória. O conteúdo completo chega na Task 13.</p>
+<!-- 2. Vitrine: os produtos mais recentes, vindos da API -->
+<section class="secao" aria-labelledby="titulo-vitrine" aria-live="polite">
+  <h2 id="titulo-vitrine">Produtos em destaque</h2>
+
+  @if (carregando()) {
+    <div class="estado">
+      <mat-progress-spinner mode="indeterminate" diameter="40" aria-label="Carregando produtos" />
+    </div>
+  } @else if (erro(); as mensagem) {
+    <p class="estado erro"><mat-icon>error</mat-icon> {{ mensagem }}</p>
+  } @else {
+    <div class="grade">
+      <!-- Para cada produto, um <app-cartao-produto>, passando o produto com [produto]="..." (≈ :produto no Vue). -->
+      @for (produto of produtos(); track produto.id) {
+        <app-cartao-produto [produto]="produto" />
+      } @empty {
+        <p class="estado">Em breve, novidades por aqui.</p>
+      }
+    </div>
+    @if (produtos().length > 0) {
+      <div class="mais">
+        <a mat-flat-button routerLink="/produtos">
+          Ver catálogo completo
+          <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+        </a>
+      </div>
+    }
+  }
+</section>
+
+<!-- 3. Instagram -->
+<section class="secao" aria-labelledby="titulo-instagram">
+  <h2 id="titulo-instagram">Instagram</h2>
+  <!--
+    @defer (on viewport): o conteúdo (e o código dele) só é carregado quando a seção chega perto da tela.
+    Quem não rolar até aqui nunca baixa os posts do Instagram. O @placeholder aparece antes disso.
+  -->
+  @defer (on viewport) {
+    <div class="posts">
+      @for (post of posts; track post.codigo) {
+        <app-post-instagram [post]="post" />
+      }
+    </div>
+  } @placeholder {
+    <p class="estado">Os posts aparecem ao rolar a página.</p>
+  }
+  <div class="mais">
+    <a mat-stroked-button [href]="instagram" target="_blank" rel="noopener">
+      <mat-icon>photo_camera</mat-icon>
+      Seguir &#64;brumipresentes
+    </a>
+  </div>
+</section>

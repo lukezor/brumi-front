@@ -27,7 +27,7 @@ describe('Rotas', () => {
 
   it('"/" mostra a pagina inicial', async () => {
     await harness.navigateByUrl('/');
-    expect(titulo()).toBe('Brumi Presentes Perfumados');
+    expect(titulo()).toBe('BRUMI PRESENTES PERFUMADOS');
     expect(TestBed.inject(Title).getTitle()).toBe('Brumi Presentes - Presentes Especiais');
   });
 
@@ -46,7 +46,7 @@ describe('Rotas', () => {
   it('URL desconhecida volta para o inicio', async () => {
     await harness.navigateByUrl('/pagina-que-nao-existe');
     expect(TestBed.inject(Router).url).toBe('/');
-    expect(titulo()).toBe('Brumi Presentes Perfumados');
+    expect(titulo()).toBe('BRUMI PRESENTES PERFUMADOS');
   });
 
   it('as paginas sao carregadas sob demanda (lazy loading)', () => {

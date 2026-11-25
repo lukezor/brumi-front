@@ -1,0 +1,45 @@
+<mat-card class="cartao" appearance="outlined">
+  @if (foto(); as endereco) {
+    @if (!fotoFalhou()) {
+      <!--
+        (error)="...": evento do próprio <img>, disparado se a foto não carregar.
+        ≈ @error="..." no Vue; ng-on-error / onerror no AngularJS.
+        loading="lazy": o navegador só baixa a foto quando ela está perto de aparecer na tela.
+      -->
+      <img class="foto" [src]="endereco" [alt]="produto().nome" loading="lazy" (error)="fotoFalhou.set(true)" />
+    } @else {
+      <div class="sem-foto" role="img" [attr.aria-label]="'Foto indisponível: ' + produto().nome">
+        <mat-icon>image_not_supported</mat-icon>
+      </div>
+    }
+  } @else {
+    <div class="sem-foto" role="img" [attr.aria-label]="'Produto sem foto: ' + produto().nome">
+      <mat-icon>redeem</mat-icon>
+    </div>
+  }
+
+  <mat-card-content>
+    <h3 class="nome">{{ produto().nome }}</h3>
+    @if (produto().descricao; as descricao) {
+      <p class="descricao">{{ descricao }}</p>
+    }
+    <!--
+      Pipe: transforma o valor só na hora de mostrar. "| currency" formata como dinheiro, no idioma configurado
+      (pt-BR) e na moeda padrão (BRL): 199.9 → "R$ 199,90".
+    -->
+    <p class="preco">
+      @if (produto().preco !== null) {
+        {{ produto().preco | currency }}
+      } @else {
+        Preço sob consulta
+      }
+    </p>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <a mat-button [href]="linkPedido()" target="_blank" rel="noopener">
+      <mat-icon>chat</mat-icon>
+      Pedir pelo WhatsApp
+    </a>
+  </mat-card-actions>
+</mat-card>
