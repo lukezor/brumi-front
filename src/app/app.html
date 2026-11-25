@@ -5,6 +5,8 @@
     @if / @for       controle de fluxo             (≈ v-if / v-for, ng-if / ng-repeat)
     #nome            referencia a um elemento      (≈ ref="nome" do Vue)
 -->
+<!-- O cabeçalho inteiro (barra + menu do celular) fica grudado no topo ao rolar. -->
+<header class="cabecalho">
 <mat-toolbar class="topo">
   <a class="marca" routerLink="/" aria-label="Brumi Presentes, página inicial">
     <mat-icon>redeem</mat-icon>
@@ -15,17 +17,20 @@
 
   <!-- telaPequena() com parenteses: e assim que se le um signal. -->
   @if (telaPequena()) {
-    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Abrir menu">
-      <mat-icon>menu</mat-icon>
+    <!--
+      Menu do celular SEM o mat-menu: um botão que abre e fecha um painel logo abaixo da barra.
+      aria-expanded / aria-controls: dizem ao leitor de tela se o painel está aberto e qual é ele.
+    -->
+    <button
+      mat-icon-button
+      type="button"
+      aria-controls="menu-celular"
+      [attr.aria-expanded]="menuAberto()"
+      [attr.aria-label]="menuAberto() ? 'Fechar menu' : 'Abrir menu'"
+      (click)="alternarMenu()"
+    >
+      <mat-icon>{{ menuAberto() ? 'close' : 'menu' }}</mat-icon>
     </button>
-    <mat-menu #menu="matMenu">
-      @for (link of links; track link.rota) {
-        <a mat-menu-item [routerLink]="link.rota">
-          <mat-icon>{{ link.icone }}</mat-icon>
-          <span>{{ link.rotulo }}</span>
-        </a>
-      }
-    </mat-menu>
   } @else {
     <nav class="navegacao" aria-label="Navegação principal">
       <!-- track: identifica cada item para o Angular reaproveitar elementos (≈ :key do Vue). -->
@@ -43,6 +48,18 @@
     </nav>
   }
 </mat-toolbar>
+
+@if (telaPequena() && menuAberto()) {
+  <nav id="menu-celular" class="menu-celular" aria-label="Navegação principal">
+    @for (link of links; track link.rota) {
+      <a [routerLink]="link.rota" routerLinkActive="ativo" [routerLinkActiveOptions]="{ exact: link.exato }">
+        <mat-icon>{{ link.icone }}</mat-icon>
+        <span>{{ link.rotulo }}</span>
+      </a>
+    }
+  </nav>
+}
+</header>
 
 <main class="conteudo">
   <!-- A pagina da rota atual aparece aqui (≈ <router-view /> do Vue, <ng-view> do AngularJS). -->

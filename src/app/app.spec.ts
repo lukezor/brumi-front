@@ -1,5 +1,7 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { of } from 'rxjs';
 import { App } from './app';
 
 /**
@@ -46,6 +48,60 @@ describe('App (layout)', () => {
     expect(admin?.textContent).toBe('Área administrativa');
     expect(admin?.getAttribute('href')).toBe('/admin');
     expect(tela.querySelector('footer')?.textContent).toContain(String(new Date().getFullYear()));
+  });
+
+  describe('no celular', () => {
+    beforeEach(() => {
+      // Dublê do BreakpointObserver: diz que a tela é de celular. ≈ @MockitoBean no Spring.
+      TestBed.overrideProvider(BreakpointObserver, {
+        useValue: { observe: () => of({ matches: true, breakpoints: {} }) },
+      });
+    });
+
+    const botaoMenu = (tela: HTMLElement) => tela.querySelector<HTMLButtonElement>('button[aria-controls="menu-celular"]')!;
+
+    it('troca os links da barra por um botão de menu, fechado', async () => {
+      const tela = await desenhar();
+      expect(tela.querySelector('nav.navegacao')).toBeNull();
+      expect(botaoMenu(tela).getAttribute('aria-expanded')).toBe('false');
+      expect(botaoMenu(tela).getAttribute('aria-label')).toBe('Abrir menu');
+      expect(tela.querySelector('#menu-celular')).toBeNull();
+    });
+
+    it('o botão abre e fecha o painel com os links', async () => {
+      const fixture = TestBed.createComponent(App);
+      await fixture.whenStable();
+      const tela = fixture.nativeElement as HTMLElement;
+
+      botaoMenu(tela).click();
+      await fixture.whenStable();
+      expect(botaoMenu(tela).getAttribute('aria-expanded')).toBe('true');
+      expect(botaoMenu(tela).getAttribute('aria-label')).toBe('Fechar menu');
+      const links = Array.from(tela.querySelectorAll<HTMLAnchorElement>('#menu-celular a')).map((a) => a.getAttribute('href'));
+      expect(links).toEqual(['/', '/produtos']);
+
+      botaoMenu(tela).click();
+      await fixture.whenStable();
+      expect(tela.querySelector('#menu-celular')).toBeNull();
+    });
+
+    it('fecha com Esc e ao navegar', async () => {
+      const fixture = TestBed.createComponent(App);
+      await fixture.whenStable();
+      const tela = fixture.nativeElement as HTMLElement;
+
+      botaoMenu(tela).click();
+      await fixture.whenStable();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      await fixture.whenStable();
+      expect(tela.querySelector('#menu-celular')).toBeNull();
+
+      botaoMenu(tela).click();
+      await fixture.whenStable();
+      await TestBed.inject(Router).navigateByUrl('/');
+      await fixture.whenStable();
+      expect(tela.querySelector('#menu-celular')).toBeNull();
+    });
   });
 
   it('o rodape traz o contato da loja em todas as paginas', async () => {

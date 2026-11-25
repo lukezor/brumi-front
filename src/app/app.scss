@@ -7,11 +7,37 @@
   min-height: 100vh; // rodape sempre no fim da tela, mesmo com pouco conteudo
 }
 
-.topo {
+// O cabeçalho (barra + menu do celular) gruda no topo ao rolar.
+.cabecalho {
   position: sticky;
   top: 0;
   z-index: 10;
+}
 
+// Painel do menu do celular: abre logo abaixo da barra, com a mesma cor dela.
+.menu-celular {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  background-color: var(--mat-sys-primary);
+  box-shadow: var(--mat-sys-level2);
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    color: var(--mat-sys-on-primary);
+    text-decoration: none;
+    font: var(--mat-sys-title-medium);
+
+    &.ativo {
+      background-color: color-mix(in srgb, var(--mat-sys-on-primary) 18%, transparent);
+    }
+  }
+}
+
+.topo {
   // Material 3: a cor de cada componente vem de variaveis CSS. Aqui deixamos a barra azul com texto
   // branco, como no site antigo. --mat-sys-primary e a cor principal do tema (styles.scss).
   --mat-toolbar-container-background-color: var(--mat-sys-primary);

@@ -1,12 +1,11 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { map } from 'rxjs';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { filter, map } from 'rxjs';
 import { CONTATO, linkWhatsapp } from './core/contato';
 
 /** Um item do menu de navegacao. "interface" so existe no TypeScript: descreve o formato de um objeto. */
@@ -34,8 +33,10 @@ interface LinkMenu {
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
-    MatMenuModule,
   ],
+  // host: liga eventos ao PRÓPRIO elemento do componente (ou à página, com "document:").
+  // Esc em qualquer lugar fecha o menu do celular. ≈ um addEventListener('keydown', ...) no document.
+  host: { '(document:keydown.escape)': 'fecharMenu()' },
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -67,4 +68,29 @@ export class App {
   protected readonly ano = new Date().getFullYear();
   protected readonly contato = CONTATO;
   protected readonly whatsapp = linkWhatsapp();
+
+  /**
+   * Menu do celular aberto? Antes era o mat-menu do Material, que traz junto o "overlay" do CDK (cerca de 83 kB no
+   * pacote inicial). Um painel simples faz o mesmo papel com um signal (Task 15, opção B da análise de tamanho).
+   */
+  protected readonly menuAberto = signal(false);
+
+  constructor() {
+    // Escolheu um link (ou navegou de outro jeito)? Fecha o menu. Router.events é um Observable de eventos de
+    // navegação. Só nos interessa o fim de uma navegação (NavigationEnd).
+    inject(Router)
+      .events.pipe(
+        filter((evento) => evento instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => this.fecharMenu());
+  }
+
+  protected alternarMenu(): void {
+    this.menuAberto.update((aberto) => !aberto);
+  }
+
+  protected fecharMenu(): void {
+    this.menuAberto.set(false);
+  }
 }
