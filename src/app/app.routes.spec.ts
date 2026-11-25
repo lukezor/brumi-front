@@ -1,3 +1,5 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { provideRouter, Router } from '@angular/router';
@@ -12,7 +14,10 @@ describe('Rotas', () => {
   let harness: RouterTestingHarness;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
+    TestBed.configureTestingModule({
+      // A página de produtos chama a API ao abrir: o HttpClient de teste segura as requisições (sem responder).
+      providers: [provideRouter(routes), provideHttpClient(), provideHttpClientTesting()],
+    });
     harness = await RouterTestingHarness.create();
   });
 

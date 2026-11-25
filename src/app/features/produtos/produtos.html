@@ -1,2 +1,24 @@
 <h1>Produtos</h1>
 <p class="aviso">Catálogo provisório. A lista com filtros e paginação chega na Task 14.</p>
+
+<section class="api" aria-live="polite">
+  <h2>Conexão com a API</h2>
+
+  <!-- @if / @else if / @else: os três estados da tela. "as mensagem" guarda o valor lido para usar dentro. -->
+  @if (carregando()) {
+    <p>Carregando…</p>
+  } @else if (erro(); as mensagem) {
+    <p class="erro"><mat-icon>error</mat-icon> {{ mensagem }}</p>
+  } @else {
+    <p class="resumo">
+      {{ totalProdutos() }} produtos ativos em {{ categorias().length }} categorias:
+    </p>
+    <mat-chip-set aria-label="Categorias">
+      @for (categoria of categorias(); track categoria.id) {
+        <mat-chip>{{ categoria.nome }}</mat-chip>
+      } @empty {
+        <p>Nenhuma categoria cadastrada.</p>
+      }
+    </mat-chip-set>
+  }
+</section>

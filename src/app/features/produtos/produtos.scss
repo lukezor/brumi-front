@@ -1,3 +1,22 @@
 .aviso {
   color: var(--mat-sys-on-surface-variant);
 }
+
+.api {
+  margin-top: 24px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  background-color: var(--mat-sys-surface-container-low);
+
+  h2 {
+    font: var(--mat-sys-title-medium);
+    margin: 0 0 12px;
+  }
+}
+
+.erro {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mat-sys-error);
+}
