@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard, visitanteGuard } from './core/auth/guards';
 
 /**
  * Tabela de rotas: qual componente aparece em qual URL.
@@ -8,6 +9,7 @@ import { Routes } from '@angular/router';
  * quando o usuario visita aquela pagina. Quem so ve o catalogo nunca baixa o codigo do painel admin.
  *
  * title: o Angular troca o titulo da aba do navegador automaticamente ao navegar.
+ * canActivate: guards que decidem se a rota pode ser aberta (Task 15).
  */
 export const routes: Routes = [
   {
@@ -21,8 +23,15 @@ export const routes: Routes = [
     loadComponent: () => import('./features/produtos/produtos').then((m) => m.Produtos),
   },
   {
+    path: 'admin/login',
+    title: 'Entrar | Brumi Presentes',
+    canActivate: [visitanteGuard],
+    loadComponent: () => import('./features/admin/login/login').then((m) => m.Login),
+  },
+  {
     path: 'admin',
     title: 'Administração | Brumi Presentes',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/admin/admin').then((m) => m.Admin),
   },
   // Qualquer outra URL volta para o inicio. Tem que ser a ULTIMA: as rotas sao testadas na ordem.

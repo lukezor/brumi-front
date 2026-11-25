@@ -1,0 +1,70 @@
+<mat-card class="cartao" appearance="outlined">
+  <div class="topo">
+    <mat-icon>admin_panel_settings</mat-icon>
+    <h1>Área administrativa</h1>
+    <p>BRUMI PRESENTES</p>
+  </div>
+
+  <mat-card-content>
+    @if (sessaoExpirou) {
+      <p class="aviso" role="status">
+        <mat-icon>schedule</mat-icon>
+        Sua sessão expirou. Entre novamente.
+      </p>
+    }
+
+    <!--
+      (ngSubmit): enviar o formulário (botão "Entrar" ou Enter num campo). O Angular já evita o recarregamento da
+      página que um <form> faria. ≈ @submit.prevent do Vue; ng-submit do AngularJS.
+    -->
+    <form [formGroup]="formulario" (ngSubmit)="entrar()" novalidate>
+      <mat-form-field appearance="outline">
+        <mat-label>Usuário</mat-label>
+        <mat-icon matPrefix>person</mat-icon>
+        <input matInput formControlName="usuario" autocomplete="username" />
+        @if (formulario.controls.usuario.hasError('required')) {
+          <mat-error>Informe o usuário</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Senha</mat-label>
+        <mat-icon matPrefix>lock</mat-icon>
+        <input
+          matInput
+          formControlName="senha"
+          [type]="mostrarSenha() ? 'text' : 'password'"
+          autocomplete="current-password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          [attr.aria-label]="mostrarSenha() ? 'Esconder senha' : 'Mostrar senha'"
+          [attr.aria-pressed]="mostrarSenha()"
+          (click)="mostrarSenha.set(!mostrarSenha())"
+        >
+          <mat-icon>{{ mostrarSenha() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (formulario.controls.senha.hasError('required')) {
+          <mat-error>Informe a senha</mat-error>
+        }
+      </mat-form-field>
+
+      @if (erro(); as mensagem) {
+        <p class="erro" role="alert">
+          <mat-icon>error</mat-icon>
+          {{ mensagem }}
+        </p>
+      }
+
+      <button mat-flat-button type="submit" class="entrar" [disabled]="enviando()">
+        @if (enviando()) {
+          <mat-progress-spinner mode="indeterminate" diameter="20" aria-label="Entrando" />
+        } @else {
+          Entrar
+        }
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>

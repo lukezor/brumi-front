@@ -30,8 +30,14 @@ export class ArmazenamentoToken {
   /** Signal: quando o token muda (login, logout, vencimento), quem depende dele é avisado. */
   private readonly salvo = signal<TokenSalvo | null>(this.lerDoNavegador());
 
-  /** true se há um token que ainda não venceu (no momento da leitura). */
+  /**
+   * true se há um token guardado. Atenção: NÃO confere o vencimento sozinho (um signal só muda quando alguém o
+   * altera, e não com a passagem do tempo). Para decidir se pode entrar numa página, use obter(), que confere.
+   */
   readonly temToken = computed(() => this.salvo() !== null);
+
+  /** O token guardado (sem conferir o vencimento), para ler quem está logado. */
+  readonly tokenAtual = computed(() => this.salvo()?.valor ?? null);
 
   /** Guarda o token recebido no login. */
   salvar(login: LoginResponse): void {

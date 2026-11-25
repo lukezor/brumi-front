@@ -1,2 +1,14 @@
-<h1>Administração</h1>
-<p class="aviso">Área provisória. O login chega na Task 15 e o painel na Task 16.</p>
+<header class="cabecalho">
+  <div>
+    <h1>Painel administrativo</h1>
+    <p>
+      Conectado como <strong>{{ auth.usuario() ?? 'administrador' }}</strong>
+    </p>
+  </div>
+  <button mat-stroked-button type="button" (click)="sair()">
+    <mat-icon>logout</mat-icon>
+    Sair
+  </button>
+</header>
+
+<p class="aviso">O cadastro de produtos, categorias e imagens chega na Task 16.</p>
