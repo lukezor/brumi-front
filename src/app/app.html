@@ -1,0 +1,55 @@
+<!--
+  Template do layout. Sintaxe do Angular usada aqui:
+    {{ x }}          mostra um valor               (igual no Vue e no AngularJS)
+    [atributo]="x"   liga um atributo a um valor   (≈ :atributo do Vue, ng-atributo do AngularJS)
+    @if / @for       controle de fluxo             (≈ v-if / v-for, ng-if / ng-repeat)
+    #nome            referencia a um elemento      (≈ ref="nome" do Vue)
+-->
+<mat-toolbar class="topo">
+  <a class="marca" routerLink="/" aria-label="Brumi Presentes, página inicial">
+    <mat-icon>redeem</mat-icon>
+    <span>BRUMI PRESENTES</span>
+  </a>
+
+  <span class="espaco"></span>
+
+  <!-- telaPequena() com parenteses: e assim que se le um signal. -->
+  @if (telaPequena()) {
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Abrir menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      @for (link of links; track link.rota) {
+        <a mat-menu-item [routerLink]="link.rota">
+          <mat-icon>{{ link.icone }}</mat-icon>
+          <span>{{ link.rotulo }}</span>
+        </a>
+      }
+    </mat-menu>
+  } @else {
+    <nav class="navegacao" aria-label="Navegação principal">
+      <!-- track: identifica cada item para o Angular reaproveitar elementos (≈ :key do Vue). -->
+      @for (link of links; track link.rota) {
+        <a
+          mat-button
+          [routerLink]="link.rota"
+          routerLinkActive="ativo"
+          [routerLinkActiveOptions]="{ exact: link.exato }"
+        >
+          <mat-icon>{{ link.icone }}</mat-icon>
+          {{ link.rotulo }}
+        </a>
+      }
+    </nav>
+  }
+</mat-toolbar>
+
+<main class="conteudo">
+  <!-- A pagina da rota atual aparece aqui (≈ <router-view /> do Vue, <ng-view> do AngularJS). -->
+  <router-outlet />
+</main>
+
+<footer class="rodape">
+  <span>© {{ ano }} Brumi Presentes Perfumados</span>
+  <a routerLink="/admin">Área administrativa</a>
+</footer>

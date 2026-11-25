@@ -1,0 +1,16 @@
+.destaque {
+  padding: 48px 24px;
+  border-radius: 16px;
+  text-align: center;
+  background-color: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+
+  p {
+    font: var(--mat-sys-title-medium);
+    margin: 0 0 24px;
+  }
+}
+
+.aviso {
+  color: var(--mat-sys-on-surface-variant);
+}
