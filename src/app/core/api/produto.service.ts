@@ -62,8 +62,12 @@ export class ProdutoService {
  * URL completa de uma imagem para usar em <img [src]>.
  * A API devolve "/uploads/<arquivo>" (relativo a ELA). Em desenvolvimento o apiUrl é vazio e o proxy
  * entrega /uploads; em produção, se a API estiver em outro endereço, o apiUrl o coloca na frente.
+ * Se a API já devolver uma URL absoluta (url-publica configurada no backend), ela é usada como está.
  */
 export function urlImagem(caminho: string): string {
+  if (/^https?:\/\//.test(caminho)) {
+    return caminho;
+  }
   return `${environment.apiUrl}${caminho}`;
 }
 

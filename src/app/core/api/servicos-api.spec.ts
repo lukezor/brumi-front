@@ -106,6 +106,8 @@ describe('Services da API', () => {
 
     it('urlImagem junta o endereço da API ao caminho (vazio em desenvolvimento)', () => {
       expect(urlImagem('/uploads/abc.png')).toBe('/uploads/abc.png');
+      // URL absoluta (API com url-publica configurada): usada como está.
+      expect(urlImagem('https://fotos.exemplo.com/abc.png')).toBe('https://fotos.exemplo.com/abc.png');
     });
   });
 
