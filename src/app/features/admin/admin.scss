@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 
   h1 {
     margin: 0;
@@ -17,6 +17,75 @@
   }
 }
 
-.aviso {
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+  img,
+  .sem-foto {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    object-fit: cover;
+    background-color: var(--mat-sys-surface-container-high);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nome {
+    font: var(--mat-sys-title-small);
+    margin: 0;
+  }
+
+  .detalhes {
+    margin: 2px 0 0;
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-body-small);
+  }
+
+  .acoes {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.nova-categoria {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 16px 0;
+
+  mat-form-field {
+    flex: 1;
+  }
+
+  button {
+    margin-top: 8px;
+  }
+}
+
+.estado {
+  padding: 32px 0;
+  text-align: center;
   color: var(--mat-sys-on-surface-variant);
 }

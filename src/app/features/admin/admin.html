@@ -11,4 +11,77 @@
   </button>
 </header>
 
-<p class="aviso">O cadastro de produtos, categorias e imagens chega na Task 16.</p>
+<mat-tab-group>
+  <!-- Aba 1: produtos -->
+  <mat-tab label="Produtos">
+    <div class="barra">
+      <mat-button-toggle-group [value]="ativos()" (change)="trocarGrupo($event.value)" aria-label="Quais produtos mostrar">
+        <mat-button-toggle [value]="true">Ativos</mat-button-toggle>
+        <mat-button-toggle [value]="false">Inativos</mat-button-toggle>
+      </mat-button-toggle-group>
+      <button mat-flat-button type="button" (click)="abrirFormulario()">
+        <mat-icon>add</mat-icon>
+        Novo produto
+      </button>
+    </div>
+
+    @if (carregando()) {
+      <mat-progress-bar mode="indeterminate" aria-label="Carregando" />
+    }
+
+    @if (erro(); as mensagem) {
+      <p class="estado" role="alert">{{ mensagem }}</p>
+    } @else {
+      <ul class="lista">
+        @for (produto of produtos(); track produto.id) {
+          <li class="item">
+            @if (produto.imagens[0]; as foto) {
+              <img [src]="urlImagem(foto)" [alt]="produto.nome" />
+            } @else {
+              <span class="sem-foto"><mat-icon>redeem</mat-icon></span>
+            }
+            <div>
+              <p class="nome">{{ produto.nome }}</p>
+              <p class="detalhes">
+                {{ produto.preco !== null ? (produto.preco | currency) : 'Sem preço' }} ·
+                {{ produto.imagens.length }} foto(s) ·
+                {{ nomesDasCategorias(produto) || 'sem categoria' }}
+              </p>
+            </div>
+            <div class="acoes">
+              <button mat-icon-button type="button" [attr.aria-label]="'Editar ' + produto.nome" (click)="abrirFormulario(produto)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button type="button" [attr.aria-label]="'Fotos de ' + produto.nome" (click)="abrirFotos(produto)">
+                <mat-icon>photo_library</mat-icon>
+              </button>
+              <button mat-icon-button type="button" [attr.aria-label]="'Excluir ' + produto.nome" (click)="excluir(produto)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </li>
+        } @empty {
+          @if (!carregando()) {
+            <li class="estado">{{ ativos() ? 'Nenhum produto ativo.' : 'Nenhum produto inativo.' }}</li>
+          }
+        }
+      </ul>
+    }
+  </mat-tab>
+
+  <!-- Aba 2: categorias -->
+  <mat-tab label="Categorias">
+    <form class="nova-categoria" (ngSubmit)="criarCategoria()">
+      <mat-form-field appearance="outline">
+        <mat-label>Nova categoria</mat-label>
+        <input matInput [formControl]="novaCategoria" maxlength="100" />
+      </mat-form-field>
+      <button mat-flat-button type="submit" [disabled]="novaCategoria.invalid">Adicionar</button>
+    </form>
+    <mat-chip-set aria-label="Categorias cadastradas">
+      @for (categoria of categorias(); track categoria.id) {
+        <mat-chip>{{ categoria.nome }}</mat-chip>
+      }
+    </mat-chip-set>
+  </mat-tab>
+</mat-tab-group>
