@@ -1,0 +1,100 @@
+<!--
+  Template do layout. Sintaxe do Angular usada aqui:
+    {{ x }}          mostra um valor               (igual no Vue e no AngularJS)
+    [atributo]="x"   liga um atributo a um valor   (≈ :atributo do Vue, ng-atributo do AngularJS)
+    @if / @for       controle de fluxo             (≈ v-if / v-for, ng-if / ng-repeat)
+    #nome            referencia a um elemento      (≈ ref="nome" do Vue)
+-->
+<!-- O cabeçalho inteiro (barra + menu do celular) fica grudado no topo ao rolar. -->
+<header class="cabecalho">
+<mat-toolbar class="topo">
+  <a class="marca" routerLink="/" aria-label="Brumi Presentes, página inicial">
+    <mat-icon>redeem</mat-icon>
+    <span>BRUMI PRESENTES</span>
+  </a>
+
+  <span class="espaco"></span>
+
+  <!-- telaPequena() com parenteses: e assim que se le um signal. -->
+  @if (telaPequena()) {
+    <!--
+      Menu do celular SEM o mat-menu: um botão que abre e fecha um painel logo abaixo da barra.
+      aria-expanded / aria-controls: dizem ao leitor de tela se o painel está aberto e qual é ele.
+    -->
+    <button
+      mat-icon-button
+      type="button"
+      aria-controls="menu-celular"
+      [attr.aria-expanded]="menuAberto()"
+      [attr.aria-label]="menuAberto() ? 'Fechar menu' : 'Abrir menu'"
+      (click)="alternarMenu()"
+    >
+      <mat-icon>{{ menuAberto() ? 'close' : 'menu' }}</mat-icon>
+    </button>
+  } @else {
+    <nav class="navegacao" aria-label="Navegação principal">
+      <!-- track: identifica cada item para o Angular reaproveitar elementos (≈ :key do Vue). -->
+      @for (link of links; track link.rota) {
+        <a
+          mat-button
+          [routerLink]="link.rota"
+          routerLinkActive="ativo"
+          [routerLinkActiveOptions]="{ exact: link.exato }"
+        >
+          <mat-icon>{{ link.icone }}</mat-icon>
+          {{ link.rotulo }}
+        </a>
+      }
+    </nav>
+  }
+</mat-toolbar>
+
+@if (telaPequena() && menuAberto()) {
+  <nav id="menu-celular" class="menu-celular" aria-label="Navegação principal">
+    @for (link of links; track link.rota) {
+      <a [routerLink]="link.rota" routerLinkActive="ativo" [routerLinkActiveOptions]="{ exact: link.exato }">
+        <mat-icon>{{ link.icone }}</mat-icon>
+        <span>{{ link.rotulo }}</span>
+      </a>
+    }
+  </nav>
+}
+</header>
+
+<main class="conteudo">
+  <!-- A pagina da rota atual aparece aqui (≈ <router-view /> do Vue, <ng-view> do AngularJS). -->
+  <router-outlet />
+</main>
+
+<footer class="rodape" id="contato">
+  <div class="colunas">
+    <div>
+      <h3>{{ contato.nome }}</h3>
+      @for (linha of contato.descricao; track linha) {
+        <p>{{ linha }}</p>
+      }
+      <p><mat-icon inline>location_on</mat-icon> {{ contato.cidade }}</p>
+    </div>
+    <div>
+      <h3>Contato</h3>
+      <p>Pedidos pelo WhatsApp</p>
+      <p>
+        <a [href]="whatsapp" target="_blank" rel="noopener">
+          <mat-icon inline>chat</mat-icon> {{ contato.whatsappExibicao }}
+        </a>
+      </p>
+    </div>
+    <div>
+      <h3>Redes sociais</h3>
+      <p>
+        <a [href]="contato.instagram" target="_blank" rel="noopener">
+          <mat-icon inline>photo_camera</mat-icon> Instagram
+        </a>
+      </p>
+    </div>
+  </div>
+  <div class="final">
+    <span>© {{ ano }} Brumi Presentes Perfumados</span>
+    <a routerLink="/admin">Área administrativa</a>
+  </div>
+</footer>

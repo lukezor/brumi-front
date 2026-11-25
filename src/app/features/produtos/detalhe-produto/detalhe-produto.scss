@@ -1,0 +1,18 @@
+.titulo {
+  color: var(--mat-sys-primary);
+}
+
+app-galeria-produto {
+  margin-bottom: 16px;
+}
+
+.preco {
+  font: var(--mat-sys-headline-small);
+  margin: 12px 0;
+}
+
+.descricao {
+  // Mantém as quebras de linha que o admin digitou (como o "formatted-description" do Vue).
+  white-space: pre-line;
+  margin: 0;
+}

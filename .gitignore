@@ -1,109 +1,57 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Dependency directories
-node_modules/
-jspm_packages/
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
 
-# Build outputs
-dist/
-dist-ssr/
-build/
-out/
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
 
-# Environment variables
-.env
-.env.example
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+.history/*
 
-# Coverage directory used by tools like istanbul
-coverage/
-*.lcov
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
 
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Optional stylelint cache
-.stylelintcache
-
-# Microbundle cache
-.rpt2_cache/
-.rts2_cache_cjs/
-.rts2_cache_es/
-.rts2_cache_umd/
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# parcel-bundler cache (https://parceljs.org/)
-.cache
-.parcel-cache
-
-# Temporary folders
-tmp/
-temp/
-
-# Runtime data
-*.local
-
-# OS generated files
+# System files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Testing
-/cypress/videos/
-/cypress/screenshots/
-coverage/
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# TypeScript
-*.tsbuildinfo
-
-# Storybook build outputs
-.out
-.storybook-out
-storybook-static
-
-# Temporary files
-.tmp/
-.temp/
+# --- Mantidos do .gitignore do projeto Vue ---
+# Dependencias em qualquer pasta (inclusive _legacy/)
+node_modules/
+# Variaveis de ambiente e segredos
+.env
+.env.*
+!.env.example
+# Logs
+*.log
+# Ferramentas de IA
 .claude
 CLAUDE.md

@@ -1,0 +1,35 @@
+<!-- mat-dialog-title / mat-dialog-content / mat-dialog-actions: as três partes padrão de um diálogo. -->
+<h2 mat-dialog-title class="titulo">{{ produto.nome }}</h2>
+
+<mat-dialog-content>
+  <app-galeria-produto [imagens]="produto.imagens" [nome]="produto.nome" />
+
+  @if (produto.categorias.length > 0) {
+    <mat-chip-set aria-label="Categorias do produto">
+      @for (categoria of produto.categorias; track categoria.id) {
+        <mat-chip>{{ categoria.nome }}</mat-chip>
+      }
+    </mat-chip-set>
+  }
+
+  <p class="preco">
+    @if (produto.preco !== null) {
+      {{ produto.preco | currency }}
+    } @else {
+      Preço sob consulta
+    }
+  </p>
+
+  @if (produto.descricao; as descricao) {
+    <p class="descricao">{{ descricao }}</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <!-- mat-dialog-close: fecha o diálogo ao clicar, sem precisar de código. -->
+  <button mat-button type="button" mat-dialog-close>Fechar</button>
+  <a mat-flat-button [href]="linkPedido" target="_blank" rel="noopener">
+    <mat-icon>chat</mat-icon>
+    Pedir pelo WhatsApp
+  </a>
+</mat-dialog-actions>

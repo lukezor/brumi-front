@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>Fotos: {{ produto().nome }}</h2>
+
+<mat-dialog-content>
+  <h3>Fotos atuais ({{ fotos().length }} de 5)</h3>
+  <div class="grade">
+    @for (foto of fotos(); track foto) {
+      <figure>
+        <img [src]="foto" [alt]="'Foto ' + ($index + 1)" />
+        <button mat-icon-button type="button" [attr.aria-label]="'Remover foto ' + ($index + 1)" [disabled]="ocupado()" (click)="remover($index)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </figure>
+    } @empty {
+      <p class="vazio">Nenhuma foto ainda.</p>
+    }
+  </div>
+
+  @if (selecionados().length > 0) {
+    <h3>Para enviar</h3>
+    <div class="grade">
+      @for (s of selecionados(); track s.previa) {
+        <figure class="nova">
+          <img [src]="s.previa" [alt]="s.arquivo.name" />
+          <button mat-icon-button type="button" [attr.aria-label]="'Desistir de ' + s.arquivo.name" (click)="desistir($index)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </figure>
+      }
+    </div>
+  }
+
+  @if (erro(); as mensagem) {
+    <p class="erro" role="alert">{{ mensagem }}</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <!-- O <input type="file"> fica escondido; o botão o "clica". -->
+  <input #arquivo type="file" accept="image/png,image/jpeg,image/webp" multiple hidden (change)="escolher($event)" />
+  <button mat-stroked-button type="button" [disabled]="vagas() <= 0 || ocupado()" (click)="arquivo.click()">
+    <mat-icon>add_photo_alternate</mat-icon>
+    Escolher fotos
+  </button>
+  @if (selecionados().length > 0) {
+    <button mat-flat-button type="button" [disabled]="ocupado()" (click)="enviar()">
+      {{ ocupado() ? 'Enviando…' : 'Enviar ' + selecionados().length }}
+    </button>
+  }
+  <button mat-button type="button" [mat-dialog-close]="produto()">Fechar</button>
+</mat-dialog-actions>
