@@ -33,7 +33,7 @@ describe('Rotas', () => {
 
   it('"/produtos" mostra o catalogo e troca o titulo da aba', async () => {
     await harness.navigateByUrl('/produtos');
-    expect(titulo()).toBe('Produtos');
+    expect(titulo()).toBe('Catálogo de produtos');
     expect(TestBed.inject(Title).getTitle()).toBe('Produtos | Brumi Presentes');
   });
 

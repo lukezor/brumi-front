@@ -1,24 +1,116 @@
-<h1>Produtos</h1>
-<p class="aviso">Catálogo provisório. A lista com filtros e paginação chega na Task 14.</p>
+<header class="cabecalho">
+  <h1>Catálogo de produtos</h1>
+  <p>Encontre o presente perfeito para quem você ama</p>
+</header>
 
-<section class="api" aria-live="polite">
-  <h2>Conexão com a API</h2>
+<!--
+  [formGroup]: liga este <form> ao FormGroup do componente.
+  formControlName="busca": liga o campo ao FormControl "busca". Digitou? O FormControl muda, e vice-versa.
+  ≈ v-model do Vue; ng-model do AngularJS.
+-->
+<form class="filtros" [formGroup]="formulario" (submit)="$event.preventDefault()" aria-label="Filtros do catálogo">
+  <mat-form-field class="busca" appearance="outline">
+    <mat-label>Buscar pelo nome</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput formControlName="busca" autocomplete="off" />
+  </mat-form-field>
 
-  <!-- @if / @else if / @else: os três estados da tela. "as mensagem" guarda o valor lido para usar dentro. -->
-  @if (carregando()) {
-    <p>Carregando…</p>
-  } @else if (erro(); as mensagem) {
-    <p class="erro"><mat-icon>error</mat-icon> {{ mensagem }}</p>
-  } @else {
-    <p class="resumo">
-      {{ totalProdutos() }} produtos ativos em {{ categorias().length }} categorias:
-    </p>
-    <mat-chip-set aria-label="Categorias">
+  <mat-form-field appearance="outline">
+    <mat-label>Categorias</mat-label>
+    <!-- multiple: escolher várias. O valor é a lista de ids. -->
+    <mat-select formControlName="categorias" multiple>
       @for (categoria of categorias(); track categoria.id) {
-        <mat-chip>{{ categoria.nome }}</mat-chip>
-      } @empty {
-        <p>Nenhuma categoria cadastrada.</p>
+        <mat-option [value]="categoria.id">{{ categoria.nome }}</mat-option>
       }
-    </mat-chip-set>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Preço mínimo</mat-label>
+    <span matTextPrefix>R$&nbsp;</span>
+    <input matInput type="number" min="0" formControlName="precoMin" />
+    @if (formulario.controls.precoMin.hasError('min')) {
+      <mat-error>Não pode ser negativo</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Preço máximo</mat-label>
+    <span matTextPrefix>R$&nbsp;</span>
+    <input matInput type="number" min="0" formControlName="precoMax" />
+    @if (formulario.controls.precoMax.hasError('min')) {
+      <mat-error>Não pode ser negativo</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Ordenar por</mat-label>
+    <mat-select formControlName="ordem">
+      @for (opcao of opcoesOrdem; track opcao.valor) {
+        <mat-option [value]="opcao.valor">{{ opcao.rotulo }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-stroked-button class="limpar" type="button" (click)="limparFiltros()">
+    <mat-icon>filter_alt_off</mat-icon>
+    Limpar filtros
+  </button>
+
+  @if (formulario.hasError('faixaDePreco')) {
+    <p class="faixa-invalida" role="alert">O preço mínimo não pode ser maior que o máximo.</p>
+  }
+</form>
+
+<!-- Barra fina durante a busca, mantendo os resultados anteriores na tela (sem "piscar"). -->
+<div class="barra">
+  @if (carregando() && resultado()) {
+    <mat-progress-bar mode="indeterminate" aria-label="Atualizando produtos" />
+  }
+</div>
+
+<section aria-live="polite">
+  @if (erro(); as mensagem) {
+    <div class="estado erro">
+      <mat-icon>cloud_off</mat-icon>
+      <p>{{ mensagem }}</p>
+      <button mat-flat-button type="button" (click)="tentarNovamente()">
+        <mat-icon>refresh</mat-icon>
+        Tentar novamente
+      </button>
+    </div>
+  } @else if (resultado(); as pagina) {
+    @if (pagina.conteudo.length > 0) {
+      <p class="resumo">{{ resumo() }}</p>
+      <div class="grade">
+        @for (produto of pagina.conteudo; track produto.id) {
+          <!-- (detalhes)="...": escuta o output do cartão. $event é o produto que ele emitiu. -->
+          <app-cartao-produto [produto]="produto" [comDetalhes]="true" (detalhes)="abrirDetalhes($event)" />
+        }
+      </div>
+      @if (pagina.totalElementos > porPagina) {
+        <mat-paginator
+          [length]="pagina.totalElementos"
+          [pageIndex]="pagina.pagina"
+          [pageSize]="porPagina"
+          [hidePageSize]="true"
+          [showFirstLastButtons]="true"
+          (page)="mudarPagina($event)"
+          aria-label="Páginas do catálogo"
+        />
+      }
+    } @else {
+      <div class="estado">
+        <mat-icon>inventory_2</mat-icon>
+        <h2>Nenhum produto encontrado</h2>
+        <p>Tente ajustar os filtros ou limpar a busca.</p>
+        <button mat-stroked-button type="button" (click)="limparFiltros()">Limpar filtros</button>
+      </div>
+    }
+  } @else {
+    <!-- Primeira carga: ainda não há nada para mostrar. -->
+    <div class="estado">
+      <mat-progress-spinner mode="indeterminate" diameter="48" aria-label="Carregando produtos" />
+    </div>
   }
 </section>

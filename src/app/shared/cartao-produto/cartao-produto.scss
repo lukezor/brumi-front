@@ -45,9 +45,25 @@ mat-card-content {
   margin: 16px 0 8px;
 }
 
+.categorias {
+  display: block;
+  margin-bottom: 8px;
+}
+
 .descricao {
   margin: 0 0 12px;
   color: var(--mat-sys-on-surface-variant);
+  // Descrições longas ficam com no máximo 3 linhas no cartão (o texto inteiro está nos detalhes).
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+mat-card-actions {
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .preco {

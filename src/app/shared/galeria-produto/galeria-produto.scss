@@ -1,0 +1,72 @@
+:host {
+  display: block;
+}
+
+.palco {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: var(--mat-sys-surface-container-high);
+}
+
+.foto {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; // na galeria, a foto inteira (sem cortar)
+  display: block;
+}
+
+.vazio {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--mat-sys-on-surface-variant);
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+  }
+}
+
+.seta {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: color-mix(in srgb, var(--mat-sys-surface) 85%, transparent);
+
+  &.anterior {
+    left: 8px;
+  }
+
+  &.proxima {
+    right: 8px;
+  }
+}
+
+.bolinhas {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+
+  button {
+    width: 12px;
+    height: 12px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: var(--mat-sys-outline-variant);
+
+    &[aria-current='true'] {
+      background-color: var(--mat-sys-primary);
+    }
+  }
+}

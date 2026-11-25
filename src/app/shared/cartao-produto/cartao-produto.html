@@ -20,6 +20,13 @@
 
   <mat-card-content>
     <h3 class="nome">{{ produto().nome }}</h3>
+    @if (produto().categorias.length > 0) {
+      <mat-chip-set class="categorias" aria-label="Categorias do produto">
+        @for (categoria of produto().categorias; track categoria.id) {
+          <mat-chip>{{ categoria.nome }}</mat-chip>
+        }
+      </mat-chip-set>
+    }
     @if (produto().descricao; as descricao) {
       <p class="descricao">{{ descricao }}</p>
     }
@@ -37,6 +44,13 @@
   </mat-card-content>
 
   <mat-card-actions>
+    @if (comDetalhes()) {
+      <!-- (click): ao clicar, o cartão "emite" o produto para o pai. -->
+      <button mat-stroked-button type="button" (click)="detalhes.emit(produto())">
+        <mat-icon>visibility</mat-icon>
+        Ver detalhes
+      </button>
+    }
     <a mat-button [href]="linkPedido()" target="_blank" rel="noopener">
       <mat-icon>chat</mat-icon>
       Pedir pelo WhatsApp

@@ -1,0 +1,46 @@
+<div class="palco">
+  @if (atual(); as endereco) {
+    @if (!falhas().has(indice())) {
+      <img
+        class="foto"
+        [src]="endereco"
+        [alt]="nome() + ', foto ' + (indice() + 1) + ' de ' + enderecos().length"
+        (error)="marcarFalha(indice())"
+      />
+    } @else {
+      <div class="vazio" role="img" [attr.aria-label]="'Foto indisponível: ' + nome()">
+        <mat-icon>image_not_supported</mat-icon>
+        <span>Foto indisponível</span>
+      </div>
+    }
+  } @else {
+    <div class="vazio" role="img" [attr.aria-label]="'Produto sem foto: ' + nome()">
+      <mat-icon>redeem</mat-icon>
+      <span>Sem fotos</span>
+    </div>
+  }
+
+  <!-- Setas e bolinhas só fazem sentido com mais de uma foto. -->
+  @if (enderecos().length > 1) {
+    <button mat-icon-button class="seta anterior" type="button" aria-label="Foto anterior" (click)="mover(-1)">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <button mat-icon-button class="seta proxima" type="button" aria-label="Próxima foto" (click)="mover(1)">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  }
+</div>
+
+@if (enderecos().length > 1) {
+  <div class="bolinhas">
+    <!-- $index: a posição do item no @for (0, 1, 2...). ≈ o "(item, i) in lista" do v-for. -->
+    @for (endereco of enderecos(); track endereco) {
+      <button
+        type="button"
+        [attr.aria-label]="'Ver foto ' + ($index + 1)"
+        [attr.aria-current]="$index === indice()"
+        (click)="irPara($index)"
+      ></button>
+    }
+  </div>
+}

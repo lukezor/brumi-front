@@ -71,6 +71,28 @@ describe('CartaoProduto', () => {
     expect(tela.querySelector('.sem-foto')?.getAttribute('aria-label')).toBe('Foto indisponível: Cesta Especial');
   });
 
+  it('mostra as categorias do produto', async () => {
+    const tela = await mostrar(CESTA);
+    expect(Array.from(tela.querySelectorAll('mat-chip')).map((c) => c.textContent?.trim())).toEqual(['Cestas']);
+  });
+
+  it('sem comDetalhes (como na Home), não há botão "Ver detalhes"', async () => {
+    const tela = await mostrar(CESTA);
+    expect(tela.textContent).not.toContain('Ver detalhes');
+  });
+
+  it('com comDetalhes, o botão "Ver detalhes" emite o produto para o pai (output)', async () => {
+    fixture.componentRef.setInput('comDetalhes', true);
+    const tela = await mostrar(CESTA);
+    const recebidos: unknown[] = [];
+    // subscribe no output: é o que o pai faz com (detalhes)="...".
+    fixture.componentInstance.detalhes.subscribe((p) => recebidos.push(p));
+
+    Array.from(tela.querySelectorAll('button')).find((b) => b.textContent?.includes('Ver detalhes'))!.click();
+
+    expect(recebidos).toEqual([CESTA]);
+  });
+
   it('preço zero aparece como R$ 0,00 (zero não é "sem preço")', async () => {
     const tela = await mostrar({ ...CESTA, preco: 0 });
     expect(tela.querySelector('.preco')?.textContent?.trim()).toBe('R$\u00a00,00');
